@@ -1,0 +1,13 @@
+# compiled classes
+out/
+*.class
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+
+# Word lock files
+~$*.docx
