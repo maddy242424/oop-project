@@ -17,6 +17,21 @@ import java.util.Random;
  *
  * Thread safety: the parking thread (tick), the event-bus thread (park) and the GUI
  * (getters) all use the same lot, so every public method is synchronized.
+ *
+ * HOW IT CONNECTS
+ *   - Owned by ParkingSubsystem (Mall Lot in West, Hospital Lot in East).
+ *   - park() throws ParkingFullException / LotClosedException -> ParkingSubsystem catches
+ *     them and reroutes the car.
+ *   - Uses a PricingStrategy for fees; charges EVs through the Chargeable interface.
+ *   - CityMapPanel reads getSlotTypes(), getOccupantTypes(), getOccupancy(), queueLength().
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Composition (owns its ParkingSlots); a builder-style method addSlots() that returns
+ *     "this" so calls can be chained: lot.addSlots(..).addSlots(..).
+ *   - PriorityQueue<Vehicle>: poll() always gives the highest-priority vehicle (ambulance
+ *     first, then low-battery EVs, cars/bikes, trucks last) using Vehicle.compareTo().
+ *   - instanceof + downcasting to Ambulance and Chargeable.
+ *   - throw / throws, and converting a checked exception into an unchecked one.
  */
 public class ParkingLot {
     private static final Random RANDOM = new Random();

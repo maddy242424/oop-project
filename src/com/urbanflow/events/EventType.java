@@ -4,6 +4,16 @@ package com.urbanflow.events;
  * Every kind of message that can travel on the EventBus.
  * The boolean says whether the event is shown in the event log
  * (very frequent events like VEHICLES_PASSING are hidden to avoid flooding it).
+ *
+ * HOW IT CONNECTS
+ *   - Every CityEvent carries one of these types.
+ *   - Subsystems subscribe to the types they care about: bus.subscribe(this, TYPE1, TYPE2...)
+ *   - Each subsystem's onEvent() uses a switch on the type to decide what to do.
+ *
+ * OOP CONCEPTS SHOWN
+ *   - enum with a field, a constructor and a method (an enum is a special class).
+ *
+ * VIVA TIP: enum constructors are always private - you can never write new EventType(...).
  */
 public enum EventType {
     VEHICLES_PASSING(false),       // traffic -> lighting: cars passed an intersection (motion)

@@ -25,6 +25,22 @@ import java.util.ArrayList;
  *   INT-1 --------------- INT-2 --------------- INT-3
  *   Mall Lot                                    Hospital Lot (+ emergency bay)
  *   3 street lights      3 street lights       3 street lights
+ *
+ * HOW IT CONNECTS
+ *   - main() calls getInstance() -> the constructor builds clock, bus and 3 subsystems.
+ *   - start() starts every thread; shutdown() stops them and waits with join(1000).
+ *   - The GUI buttons call dispatchAmbulance(), reportAccident(), clearAccident() and
+ *     toggleSignalMode(); the GUI timer calls statusText().
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Singleton: private constructor + private static instance + static getInstance().
+ *   - Composition: the controller creates and owns the clock, bus and subsystems.
+ *   - Polymorphism: loops over ArrayList<Subsystem> calling start()/statusReport().
+ *   - Downcasting: (Thread) s inside shutdown(), to call join().
+ *   - final class: nobody can extend CityController.
+ *
+ * VIVA TIP: "How do you make a Singleton?" - private constructor, a static field that
+ * holds the only object, and a static method that creates it the first time only.
  */
 public final class CityController {
     public static final String[] AREAS = {"West", "Central", "East"};

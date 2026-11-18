@@ -11,6 +11,14 @@ import javax.swing.SwingUtilities;
  *   java -cp out com.urbanflow.UrbanFlowApp              -> opens the Swing dashboard
  *   java -cp out com.urbanflow.UrbanFlowApp --console 60 -> runs a scripted demo for 60 s
  *                                                          and prints reports (no window)
+ *
+ * HOW IT CONNECTS
+ *   main() -> CityController.getInstance() (builds the city)
+ *          -> city.start()                 (starts all threads)
+ *          -> new CityDashboard(city)      (opens the window, on the Swing thread)
+ *
+ * VIVA TIP: SwingUtilities.invokeLater(...) makes the window get created on Swing's own
+ * Event Dispatch Thread - the only thread allowed to touch Swing components.
  */
 public class UrbanFlowApp {
 

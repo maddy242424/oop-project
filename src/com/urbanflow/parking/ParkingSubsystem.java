@@ -20,6 +20,18 @@ import java.util.HashSet;
  *   2. if it is full or closed -> try the other lots (a "reroute");
  *   3. if every lot is full -> wait in the queue of the preferred lot.
  * Ambulances arriving at the hospital go to the reserved EMERGENCY bay.
+ *
+ * HOW IT CONNECTS
+ *   - LISTENS TO: CAR_NEEDS_PARKING and AMBULANCE_ARRIVED (from traffic),
+ *                 ACCIDENT_REPORTED / ROAD_REOPENED (closes / reopens the area's lot).
+ *   - PUBLISHES: CAR_REROUTED, PARKING_QUEUE_SPILLOVER, AMBULANCE_PARKED.
+ *   - See UML Figure 5 (sequence diagram) for the findParking() flow.
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Exception handling drives the logic: try park() -> catch -> try the next lot.
+ *   - Multi-catch: catch (ParkingFullException | LotClosedException e).
+ *   - Catching the PARENT type: catch (CityException e) handles any of its subclasses.
+ *   - Inheritance from AbstractSubsystem; downcasting the event payload (Vehicle) / (Ambulance).
  */
 public class ParkingSubsystem extends AbstractSubsystem {
     private static final int SPILLOVER_LIMIT = 4; // this many cars waiting = queue on the road

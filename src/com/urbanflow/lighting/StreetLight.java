@@ -9,6 +9,16 @@ import java.util.Random;
  * which enforce the rules (e.g. a FAULTY light stays faulty until repair() is called).
  * Methods are synchronized because the lighting thread, the repair-crew thread and the
  * GUI thread all use the same StreetLight objects.
+ *
+ * HOW IT CONNECTS
+ *   - LightingSubsystem owns 9 of them and calls applyMode(), vehicleNearby() and tick().
+ *   - RepairCrew calls repair() on broken ones.
+ *   - CityMapPanel reads getMode() to draw it.
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Encapsulation with a business rule inside the setter: applyMode() refuses to change
+ *     a FAULTY light. Outside code cannot break this rule because "mode" is private.
+ *   - static final constants (MAX_WATTS) and a static shared Random.
  */
 public class StreetLight {
     public static final double MAX_WATTS = 150;

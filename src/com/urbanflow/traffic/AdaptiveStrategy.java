@@ -8,6 +8,12 @@ import java.util.HashMap;
  *  2. green time is proportional to that road's share of all waiting cars,
  *     kept between minGreen and maxGreen;
  *  3. green ends early when the road becomes empty.
+ *
+ * EXAMPLE: queues N=2, E=6, S=0, W=2 (total 10), cycle 30
+ *   -> EAST gets green, for 30 * 6/10 = 18 s, clamped to maxGreen = 15 s.
+ *
+ * OOP CONCEPTS SHOWN: implementing an interface (same methods as FixedTimerStrategy,
+ * different behaviour = polymorphism); HashMap lookups; a for-each loop over an enum.
  */
 public class AdaptiveStrategy implements SignalStrategy {
     private final int minGreen;

@@ -18,6 +18,22 @@ import java.util.LinkedList;
  *    something, then takes the event and delivers it.
  * All access to the queue happens inside synchronized code, so two threads can never
  * corrupt it.
+ *
+ * HOW IT CONNECTS
+ *   - Created by CityController; given to every subsystem through its constructor.
+ *   - Subsystems call subscribe(...) in their constructors and publish(...) when something
+ *     happens. The GUI reads getRecentEvents() to fill the event log.
+ *
+ * OOP CONCEPTS SHOWN
+ *   - implements Runnable (its own "EventBus" thread).
+ *   - wait() / notify() producer-consumer; LinkedList used as a queue (offer / poll).
+ *   - Method overloading: two publish(...) methods with different parameter lists.
+ *   - Varargs: subscribe(listener, EventType... types) accepts any number of types.
+ *   - Collections: HashMap<EventType, ArrayList<CityEventListener>>.
+ *
+ * VIVA TIP: "Why is wait() inside a while loop and not an if?" - A thread can wake up
+ * without the condition being true (spurious wake-up, or notifyAll at shutdown), so it
+ * must check the condition again before continuing.
  */
 public class EventBus implements Runnable {
     private final HashMap<EventType, ArrayList<CityEventListener>> listeners = new HashMap<>();

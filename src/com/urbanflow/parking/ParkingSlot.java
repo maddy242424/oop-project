@@ -6,6 +6,13 @@ import com.urbanflow.model.Vehicle;
 /**
  * One parking space. Not synchronized itself: it is only ever used from inside
  * ParkingLot's synchronized methods, so the lot's lock already protects it.
+ *
+ * HOW IT CONNECTS
+ *   - ParkingLot owns a list of slots (composition: slots do not exist without their lot).
+ *   - occupant == null means the slot is free.
+ *
+ * OOP CONCEPTS SHOWN: encapsulation; a method that declares "throws" a user-defined
+ * checked exception (SlotAlreadyTakenException).
  */
 public class ParkingSlot {
     private final String id;

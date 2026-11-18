@@ -14,6 +14,25 @@ import java.util.LinkedList;
  * Thread safety: the traffic thread calls step(), the event-bus thread calls preempt()
  * and setBlocked(), and the GUI thread reads the queues to draw them. Every public
  * method is synchronized, so only one thread at a time can touch the intersection.
+ *
+ * HOW IT CONNECTS
+ *   - Owned by TrafficSubsystem (3 of them: INT-1 West, INT-2 Central, INT-3 East).
+ *   - Uses a SignalStrategy to decide the green direction and its duration.
+ *   - Throws RoadBlockedException from arrive() during an accident.
+ *   - CityMapPanel reads getQueueSnapshot(), getGreen(), isBlocked(), isPreempted().
+ *
+ * WHAT step() DOES (one simulated second), in order of priority:
+ *   1. ambulance coming (emergencyRequests > 0) -> force green towards it (green wave)
+ *   2. accident (blocked)                       -> all red, nobody moves
+ *   3. green time used up, or road empty        -> ask the strategy for the next green
+ *   then up to 2 cars leave the green queue.
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Encapsulation: queues are private; the only way in is arrive(), the only way out is step().
+ *   - LinkedList as a queue: offer() at the back, peek()/poll() at the front.
+ *   - throws + a user-defined checked exception.
+ *   - Getters return COPIES (new HashMap / new ArrayList) so the GUI can never change the
+ *     real queues.
  */
 public class Intersection {
     public static final int CARS_PER_STEP = 2; // how many cars can cross per green second

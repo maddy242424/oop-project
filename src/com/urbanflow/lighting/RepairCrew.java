@@ -12,6 +12,19 @@ import java.util.LinkedList;
  *  - the lighting thread calls reportFault() -> adds a job and notify()
  *  - the crew thread waits (wait()) while there are no jobs, then takes the oldest
  *    job, travels/repairs for a few seconds, and marks the light fixed.
+ *
+ * HOW IT CONNECTS
+ *   - Created and started by LightingSubsystem (its own "RepairCrew" thread).
+ *   - Publishes LIGHT_REPAIRED on the EventBus when a light is fixed.
+ *
+ * OOP CONCEPTS SHOWN
+ *   - implements Runnable; wait()/notify(); LinkedList as a queue (offer/poll).
+ *   - finally: runs whether the repair finished or the thread was interrupted
+ *     (even though the catch block does "return").
+ *   - Thread.sleep() is done OUTSIDE the synchronized block so other threads can still
+ *     report faults while the crew is busy.
+ *
+ * VIVA TIP: wait() RELEASES the lock while waiting; sleep() does NOT release any lock.
  */
 public class RepairCrew implements Runnable {
     private static final long REPAIR_TIME_MS = 4000;

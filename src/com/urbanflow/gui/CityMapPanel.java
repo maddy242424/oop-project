@@ -25,6 +25,24 @@ import java.util.HashMap;
  * Draws the live city map. It only READS from the simulation (through synchronized
  * getters that return copies) and never changes it, so drawing cannot corrupt data.
  * The dashboard calls repaint() several times a second; Swing then calls paintComponent().
+ *
+ * HOW IT CONNECTS
+ *   - Placed in the CENTER of CityDashboard.
+ *   - Reads (never writes) TrafficSubsystem.getIntersections(), LightingSubsystem.getLights(),
+ *     ParkingSubsystem.getLots() and the clock.
+ *
+ * HOW THE DRAWING WORKS
+ *   paintComponent() draws in layers, back to front (later drawings cover earlier ones):
+ *     background -> roads -> street lights -> intersections + queued cars
+ *     -> ambulances on the road -> parking lots -> legend
+ *   Each draw...() helper uses Graphics2D: setColor, fillRect, fillOval, drawLine, drawString.
+ *   Coordinates are pixels from the top-left corner (y grows DOWNWARDS).
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Inheritance + overriding: extends JPanel and overrides paintComponent(); calls
+ *     super.paintComponent() first so the panel is cleared properly.
+ *   - Downcasting: (Graphics2D) g0 to get the more powerful Graphics2D methods.
+ *   - static final constants for the layout; private helper methods (encapsulation).
  */
 public class CityMapPanel extends JPanel {
     // layout (pixels)
@@ -45,23 +63,24 @@ public class CityMapPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g0) {
-        super.paintComponent(g0);
-        Graphics2D g = (Graphics2D) g0;
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        boolean night = city.getClock().isNight();
+        super.paintComponent(g0);                       // let JPanel clear the area first
+        Graphics2D g = (Graphics2D) g0;                 // downcast: Graphics2D has more features
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // smooth edges
+        boolean night = city.getClock().isNight();      // decides the colours of everything
 
-        drawBackground(g, night);
-        drawRoads(g);
-        drawLights(g);
+        // Layers, back to front:
+        drawBackground(g, night);                       // 1. sky colour, area names, clock
+        drawRoads(g);                                   // 2. main road + 3 side roads
+        drawLights(g);                                  // 3. 9 street lights
         ArrayList<Intersection> intersections = city.getTraffic().getIntersections();
         for (int i = 0; i < intersections.size(); i++) {
-            drawIntersection(g, intersections.get(i), INTERSECTION_X[i], night);
+            drawIntersection(g, intersections.get(i), INTERSECTION_X[i], night); // 4. signals + queues
         }
-        drawAmbulancesOnRoad(g);
+        drawAmbulancesOnRoad(g);                        // 5. ambulances between junctions
         ArrayList<ParkingLot> lots = city.getParking().getLots();
-        drawLot(g, lots.get(0), 195, 250, night);
-        drawLot(g, lots.get(1), 812, 250, night);
-        drawLegend(g, night);
+        drawLot(g, lots.get(0), 195, 250, night);       // 6. Mall Lot (West)
+        drawLot(g, lots.get(1), 812, 250, night);       //    Hospital Lot (East)
+        drawLegend(g, night);                           // 7. colour key
     }
 
     // ---------------------------------------------------------------- background & roads

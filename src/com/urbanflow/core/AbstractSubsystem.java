@@ -10,6 +10,21 @@ import com.urbanflow.events.EventBus;
  *      repeat: tick() -> sleep(tickMillis)
  * Subclasses only fill in tick() (what to do each step), onEvent() (how to react to
  * events from other subsystems) and statusReport().
+ *
+ * HOW IT CONNECTS
+ *   - Parent of TrafficSubsystem, LightingSubsystem and ParkingSubsystem.
+ *   - Holds the shared EventBus and SimulationClock (protected, so subclasses can use them).
+ *   - Because it implements CityEventListener, every subsystem can subscribe to the bus.
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Abstract class: has a constructor and fields, plus abstract methods (tick, onEvent).
+ *   - Inheritance: extends Thread (single inheritance of a class).
+ *   - Multiple inheritance through interfaces: implements Subsystem AND CityEventListener.
+ *   - final method: run() cannot be overridden, so every subsystem uses the same loop.
+ *   - volatile: the "running" flag is written by one thread and read by another.
+ *
+ * VIVA TIP: "Can an abstract class have a constructor?" - Yes. It cannot be instantiated
+ * with new, but its constructor runs when a subclass calls super(...).
  */
 public abstract class AbstractSubsystem extends Thread implements Subsystem, CityEventListener {
     protected final EventBus bus;

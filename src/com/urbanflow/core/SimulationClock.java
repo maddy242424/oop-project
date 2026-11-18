@@ -10,6 +10,19 @@ import com.urbanflow.events.EventType;
  *
  * Runs on its own thread (implements Runnable). Methods that read or change the
  * time are synchronized because the clock thread writes it while other threads read it.
+ *
+ * HOW IT CONNECTS
+ *   - Created by CityController and started as the "SimClock" thread.
+ *   - Every subsystem asks it isNight() / isPeakHour(); the EventBus uses timeString()
+ *     to stamp each event.
+ *   - It publishes NIGHT_STARTED and DAY_STARTED when the time crosses 19:00 / 06:00.
+ *
+ * OOP CONCEPTS SHOWN
+ *   - implements Runnable: the TASK (this class) is separate from the THREAD that runs it.
+ *   - synchronized methods, and a volatile stop flag.
+ *
+ * VIVA TIP: "Why Runnable and not extends Thread?" - It keeps the task separate from the
+ * thread, and the class stays free to extend another class if it ever needs to.
  */
 public class SimulationClock implements Runnable {
     private int minuteOfDay;              // 0 .. 1439

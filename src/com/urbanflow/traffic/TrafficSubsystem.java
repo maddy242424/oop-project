@@ -21,6 +21,17 @@ import java.util.Random;
  *  2. each intersection lets cars through according to its signal strategy;
  *  3. some of the cars that passed want to park -> CAR_NEEDS_PARKING event;
  *  4. ambulances drive along the road between intersections (green wave ahead of them).
+ *
+ * HOW IT CONNECTS
+ *   - PUBLISHES: VEHICLES_PASSING (-> lighting), CAR_NEEDS_PARKING (-> parking),
+ *                AMBULANCE_DISPATCHED / MOVED (-> lighting), AMBULANCE_ARRIVED (-> parking).
+ *   - LISTENS TO: ACCIDENT_REPORTED / ROAD_REOPENED (blocks or unblocks the area's junction).
+ *   - Called directly by CityController for dispatchAmbulance() and toggleSignalMode().
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Inheritance: extends AbstractSubsystem (so it IS a Thread), overrides tick()/onEvent().
+ *   - Static nested class WaitStats (below), "instanceof" + downcast to Ambulance.
+ *   - try/catch of RoadBlockedException; synchronized methods for the statistics.
  */
 public class TrafficSubsystem extends AbstractSubsystem {
     private static final double PARKING_CHANCE = 0.08;  // share of passing cars looking for parking

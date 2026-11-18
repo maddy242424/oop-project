@@ -2,6 +2,17 @@ package com.urbanflow.parking;
 
 import com.urbanflow.model.VehicleType;
 
+/**
+ * The kinds of parking slot.
+ *
+ * HOW IT CONNECTS
+ *   - ParkingLot.findFreeSlot() calls allowedFor(vehicleType) and tries the slot types in
+ *     that order (e.g. a Bike tries BIKE first, then STANDARD).
+ *   - EMERGENCY exists only in the Hospital Lot and only ambulances may use it.
+ *
+ * OOP CONCEPTS SHOWN: an enum with a static method; a classic switch statement on an
+ * enum; arrays (SlotType[]).
+ */
 public enum SlotType {
     BIKE, STANDARD, EV_CHARGING, HEAVY, EMERGENCY;
 

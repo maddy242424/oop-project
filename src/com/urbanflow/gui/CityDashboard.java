@@ -32,6 +32,24 @@ import java.io.IOException;
  *
  * A javax.swing.Timer refreshes the screen 5 times a second. Swing timers run on the
  * Swing (event dispatch) thread, which is the only thread allowed to touch Swing components.
+ *
+ * HOW IT CONNECTS
+ *   - Created in UrbanFlowApp.main() with SwingUtilities.invokeLater(...).
+ *   - BUTTONS -> call CityController methods (the GUI never changes simulation data itself).
+ *   - TIMER   -> every 200 ms: map.repaint(), city.statusText(), bus.getRecentEvents().
+ *
+ * WINDOW LAYOUT (BorderLayout has 5 regions; we use 3 of them)
+ *   +--------------------------------+-------------+
+ *   |  CENTER: CityMapPanel (map)    | EAST: status|
+ *   +--------------------------------+-------------+
+ *   |  SOUTH: buttons + event log                  |
+ *   +----------------------------------------------+
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Inheritance: CityDashboard extends JFrame (it IS a window).
+ *   - Anonymous inner class: new WindowAdapter() { ... } overrides windowClosing().
+ *   - Lambdas for ActionListener: e -> city.dispatchAmbulance() is short for
+ *       new ActionListener() { public void actionPerformed(ActionEvent e) { city.dispatchAmbulance(); } }
  */
 public class CityDashboard extends JFrame {
     private final CityController city;
@@ -45,15 +63,18 @@ public class CityDashboard extends JFrame {
         this.city = city;
         this.map = new CityMapPanel(city);
 
+        // STEP 1: split the window into regions and put a component in each
         setLayout(new BorderLayout());
-        add(map, BorderLayout.CENTER);
-        add(buildStatusPanel(), BorderLayout.EAST);
-        add(buildBottomPanel(), BorderLayout.SOUTH);
+        add(map, BorderLayout.CENTER);                  // the drawn city map
+        add(buildStatusPanel(), BorderLayout.EAST);     // text status of every subsystem
+        add(buildBottomPanel(), BorderLayout.SOUTH);    // buttons + event log
 
-        // refresh 5 times a second
+        // STEP 2: refresh 5 times a second. javax.swing.Timer runs refresh() on the
+        // Swing thread every 200 ms - this is what makes the screen "live".
         Timer refresh = new Timer(200, e -> refresh());
         refresh.start();
 
+        // STEP 3: when the window is closed, print the report and stop all threads cleanly
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -65,6 +86,7 @@ public class CityDashboard extends JFrame {
             }
         });
 
+        // STEP 4: size the window to fit its contents, centre it on screen, and show it
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -125,8 +147,9 @@ public class CityDashboard extends JFrame {
         return bottom;
     }
 
+    /** Called by the Timer every 200 ms: redraw the map and refill the two text areas. */
     private void refresh() {
-        map.repaint();
+        map.repaint();   // asks Swing to call CityMapPanel.paintComponent() again
         statusArea.setText(city.statusText());
         StringBuilder sb = new StringBuilder();
         for (CityEvent e : city.getBus().getRecentEvents(40)) {

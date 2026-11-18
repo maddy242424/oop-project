@@ -5,6 +5,21 @@ package com.urbanflow.model;
  *
  * Implements Comparable so a PriorityQueue can order vehicles:
  * higher priority first, and for equal priority, whoever came first (FIFO).
+ *
+ * HOW IT CONNECTS
+ *   - Parent of Car, Bike, Truck, Ambulance (and ElectricCar through Car).
+ *   - Intersections queue Vehicles; ParkingLots park them; the PriorityQueue in
+ *     ParkingLot orders them using compareTo().
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Abstract class with an abstract method (getPriority) and concrete methods.
+ *   - static field shared by ALL vehicles (nextNumber) + static synchronized method.
+ *   - protected constructor: only subclasses call it, through super(...).
+ *   - Encapsulation: private fields with getters.
+ *   - Implementing an interface (Comparable) and overriding toString().
+ *
+ * VIVA TIP: "Can you write new Vehicle(...)?" - No, it is abstract. But
+ * Vehicle v = new Car(); is fine (parent reference, child object = upcasting).
  */
 public abstract class Vehicle implements Comparable<Vehicle> {
     private static int nextNumber = 1;    // shared by all vehicles (static)

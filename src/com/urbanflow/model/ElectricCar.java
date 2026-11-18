@@ -5,6 +5,16 @@ import java.util.Random;
 /**
  * Multilevel inheritance: Vehicle -> Car -> ElectricCar.
  * It is also Chargeable (a class can extend one class and implement interfaces).
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Multilevel inheritance: ElectricCar -> Car -> Vehicle.
+ *   - Combining a class and an interface: extends Car implements Chargeable.
+ *   - super(...) calls Car's PROTECTED constructor; super.getPriority() reuses Car's method.
+ *   - static Random shared by all ElectricCars.
+ *   - synchronized methods: battery is changed by the parking thread and read by others.
+ *
+ * VIVA TIP: constructor order for new ElectricCar() is Vehicle -> Car -> ElectricCar
+ * (top of the hierarchy first).
  */
 public class ElectricCar extends Car implements Chargeable {
     private static final Random RANDOM = new Random();

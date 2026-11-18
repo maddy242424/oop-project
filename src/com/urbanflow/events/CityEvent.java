@@ -3,6 +3,16 @@ package com.urbanflow.events;
 /**
  * One immutable message on the EventBus (all fields are final and there are no setters).
  * Immutable objects are safe to share between threads without locking.
+ *
+ * HOW IT CONNECTS
+ *   - Created inside EventBus.publish(type, source, area, payload).
+ *   - Delivered to listeners' onEvent(CityEvent e); they read getType(), getArea(), getPayload().
+ *   - payload is an Object, so it can hold a Vehicle, a String or an Integer
+ *     (the receiver casts it back, e.g. (Vehicle) e.getPayload()).
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Encapsulation: private final fields + getters only.
+ *   - final class (cannot be extended) and overriding toString() from Object.
  */
 public final class CityEvent {
     private final EventType type;

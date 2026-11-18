@@ -3,6 +3,11 @@ package com.urbanflow.parking;
 /**
  * Demand-based pricing: the base rate goes up as the lot fills and at rush hour.
  *   > 90% full: x2.0     > 70% full: x1.5     rush hour: +25%
+ *
+ * EXAMPLE: STANDARD slot (base Rs.30), lot 80% full, rush hour -> 30 x (1.5 + 0.25) = Rs.52.5/h
+ *
+ * OOP CONCEPTS SHOWN: implementing an interface; a private helper method (baseRate) that
+ * outside classes cannot call; switch on an enum.
  */
 public class DynamicPricing implements PricingStrategy {
 

@@ -19,6 +19,19 @@ import java.util.Map;
  *   daytime               -> OFF
  *   night                 -> DIM, or FULL for a moment when a car passes (motion sensor)
  * Broken lights are reported to the RepairCrew.
+ *
+ * HOW IT CONNECTS
+ *   - LISTENS TO: VEHICLES_PASSING (motion), ACCIDENT_REPORTED / ROAD_REOPENED (flashing),
+ *                 AMBULANCE_DISPATCHED / MOVED (full brightness on the emergency route).
+ *   - PUBLISHES: LIGHT_FAULT. Owns the RepairCrew, which publishes LIGHT_REPAIRED.
+ *   - onEvent() (EventBus thread) only RECORDS what happened in sets/maps;
+ *     tick() (Lighting thread) ACTS on it. Both are synchronized on this object.
+ *
+ * OOP CONCEPTS SHOWN
+ *   - Inheritance (extends AbstractSubsystem); overriding start()/shutdown() and calling
+ *     super.start() / super.shutdown() so the parent's version still runs.
+ *   - Collections: ArrayList, HashSet, HashMap, and an Iterator with remove().
+ *   - A switch on an enum inside onEvent().
  */
 public class LightingSubsystem extends AbstractSubsystem {
     private final ArrayList<StreetLight> lights = new ArrayList<>();
